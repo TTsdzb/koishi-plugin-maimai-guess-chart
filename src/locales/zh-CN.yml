@@ -1,0 +1,24 @@
+commands:
+  maiguesschart:
+    description: 听 key 音猜给定歌曲的舞萌谱面难度。
+    usage: |-
+      可以通过参数指定一个 ID（ID 可通过其他 Bot 或插件查询），也可以不指定，随机选一首曲子。
+      将会随机截取某一个谱面的一部分 key 音，你需要猜出被截取的是这首歌的绿黄红紫白哪个谱面！
+      因为是随机截取，所以截到休息段也不一定哦！不要掉以轻心！
+    messages:
+      alreadyStarted: 已经有正在进行的猜谱面啦！
+      songNotFound: 没有找到 ID 为 {0} 的歌曲。
+      nowPlaying: |-
+        <p>当前正在播放</p>
+        <p>ID: {id}</p>
+        <p>标题: {title}</p>
+        <p>请猜出它是哪个谱面！</p>
+      timeout: 答案是《{0}》的“{1}”！没有人猜对，好可惜！
+      youWin: 猜对啦！这是《{0}》的“{1}”！恭喜你！
+      errorOccurred: 处理和发送音频时发生错误，请联系管理员处理。
+
+_config:
+  audioPath: 音频资源路径，请参考文档。
+  answers: 五种谱面分别的称呼。
+  duration: 发送的谱面音频的时长。
+  timeout: 作答的最大时长，超过该时长没人答对则直接结束。
