@@ -7,7 +7,7 @@
 ## 前置条件
 
 1. 安装 ffmpeg 和 ffprobe，并将其路径添加到 `PATH` 环境变量中
-2. 下载音频资源并解压，得到一个包含许多子文件夹的文件夹
+2. 在 [Release](https://github.com/TTsdzb/koishi-plugin-maimai-guess-chart/releases) 下载音频资源并解压，得到一个名为 `maimai-guess-chart-assets` 的文件夹
 
 ## 使用方法
 
