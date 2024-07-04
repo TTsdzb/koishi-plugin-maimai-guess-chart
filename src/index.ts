@@ -88,13 +88,13 @@ export function apply(ctx: Context, config: Config) {
       song,
       chart,
       timeout: setTimeout(async () => {
-        delete gameSessions[gameSessionId];
         await session.send(
           session.text("commands.maiguesschart.messages.timeout", [
             song.title,
             config.answers[chart],
           ])
         );
+        delete gameSessions[gameSessionId];
       }, config.timeout * 1000),
     };
 
