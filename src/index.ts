@@ -39,6 +39,7 @@ interface GameSession {
   song: Song;
   chart: number;
   timeout: NodeJS.Timeout;
+  answered: Set<string>;
 }
 
 export function apply(ctx: Context, config: Config) {
@@ -96,6 +97,7 @@ export function apply(ctx: Context, config: Config) {
         );
         gameSessions.delete(gameSessionId);
       }, config.timeout * 1000),
+      answered: new Set<string>(),
     });
 
     try {
@@ -120,6 +122,14 @@ export function apply(ctx: Context, config: Config) {
     const gameSession = gameSessions.get(gameSessionId);
     if (!gameSession) return next();
 
+    // User is not answering the game
+    if (!config.answers.includes(session.event.message?.content)) return next();
+
+    // The user has already answered
+    if (gameSession.answered.has(session.uid)) return next();
+    gameSession.answered.add(session.uid);
+
+    // Answer is wrong
     if (session.event.message?.content !== config.answers[gameSession.chart])
       return next();
 
