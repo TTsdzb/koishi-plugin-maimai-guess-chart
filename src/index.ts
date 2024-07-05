@@ -64,11 +64,11 @@ export function apply(ctx: Context, config: Config) {
     }
   });
 
-  const gameSessions: Record<string, GameSession> = {};
+  const gameSessions = new Map<string, GameSession>();
 
   ctx.command("maiGuessChart [id:posint]").action(async ({ session }, id) => {
     const gameSessionId = session.guildId ? session.gid : session.uid;
-    if (gameSessions[gameSessionId]) return session.text(".alreadyStarted");
+    if (gameSessions.has(gameSessionId)) return session.text(".alreadyStarted");
 
     const song = id
       ? songs.find((song) => song.id === id)
@@ -84,7 +84,7 @@ export function apply(ctx: Context, config: Config) {
       `${chart + 1}.mp3`
     );
 
-    gameSessions[gameSessionId] = {
+    gameSessions.set(gameSessionId, {
       song,
       chart,
       timeout: setTimeout(async () => {
@@ -94,9 +94,9 @@ export function apply(ctx: Context, config: Config) {
             config.answers[chart],
           ])
         );
-        delete gameSessions[gameSessionId];
+        gameSessions.delete(gameSessionId);
       }, config.timeout * 1000),
-    };
+    });
 
     try {
       const audioLength = (await metadata(audioPath)).format.duration;
@@ -109,22 +109,22 @@ export function apply(ctx: Context, config: Config) {
       );
     } catch (e) {
       logger.error(e);
-      clearTimeout(gameSessions[gameSessionId].timeout);
-      delete gameSessions[gameSessionId];
+      clearTimeout(gameSessions.get(gameSessionId).timeout);
+      gameSessions.delete(gameSessionId);
       return session.text(".errorOccurred");
     }
   });
 
   ctx.middleware((session, next) => {
     const gameSessionId = session.guildId ? session.gid : session.uid;
-    const gameSession = gameSessions[gameSessionId];
+    const gameSession = gameSessions.get(gameSessionId);
     if (!gameSession) return next();
 
     if (session.event.message?.content !== config.answers[gameSession.chart])
       return next();
 
-    clearTimeout(gameSessions[gameSessionId].timeout);
-    delete gameSessions[gameSessionId];
+    clearTimeout(gameSession.timeout);
+    gameSessions.delete(gameSessionId);
     return (
       h("quote", { id: session.event.message?.id }) +
       session.text("commands.maiguesschart.messages.youWin", [
