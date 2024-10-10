@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as fs from "fs/promises";
-import { Context, Logger, Schema, Session, h } from "koishi";
+import { Context, Logger, Schema, h } from "koishi";
 import { clipAudio, metadata } from "./ffmpeg";
 
 export const name = "maimai-guess-chart";
